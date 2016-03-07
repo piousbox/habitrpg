@@ -20,7 +20,7 @@ describe('POST /email/update', () => {
       await expect(user.post(endpoint)).to.eventually.be.rejected.and.eql({
         code: 400,
         error: 'BadRequest',
-        message: 'Invalid request parameters.',
+        message: t('invalidReqParams'),
       });
     });
 
@@ -30,7 +30,7 @@ describe('POST /email/update', () => {
       })).to.eventually.be.rejected.and.eql({
         code: 400,
         error: 'BadRequest',
-        message: 'Invalid request parameters.',
+        message:  t('invalidReqParams'),
       });
     });
 
