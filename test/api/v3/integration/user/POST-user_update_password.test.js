@@ -8,7 +8,7 @@ import { v4 as generateRandomUserName } from 'uuid';
 import { each } from 'lodash';
 import { encrypt } from '../../../../../website/src/libs/api-v3/encryption';
 
-describe.only('POST /user/update-password', async () => {
+describe('POST /user/update-password', async () => {
   let endpoint = '/user/update-password';
   let user;
   let password = 'password';

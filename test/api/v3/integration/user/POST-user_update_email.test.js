@@ -4,7 +4,7 @@ import {
 } from '../../../../helpers/api-v3-integration.helper';
 import { model as User } from '../../../../../website/src/models/user';
 
-describe('POST /email/update', () => {
+describe.only('POST /email/update', () => {
   let user;
   let fbUser;
   let endpoint = '/user/update-email';
