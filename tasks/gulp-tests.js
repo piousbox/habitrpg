@@ -358,6 +358,16 @@ gulp.task('test:api-v3:integration', (done) => {
   pipe(runner);
 });
 
+gulp.task('test:api-v3:ops', (done) => {
+  let runner = exec(
+    testBin('mocha test/common/ops --recursive'),
+    {maxBuffer: 500*1024},
+    (err, stdout, stderr) => done(err)
+  )
+
+  pipe(runner);
+});
+
 gulp.task('test:api-v3:integration:separate-server', (done) => {
   let runner = exec(
     testBin('mocha test/api/v3/integration --recursive', 'LOAD_SERVER=0'),
