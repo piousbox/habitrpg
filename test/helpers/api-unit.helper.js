@@ -5,6 +5,7 @@ import { model as User } from '../../website/src/models/user';
 import { model as Group } from '../../website/src/models/group';
 import mongo from './mongo'; // eslint-disable-line
 import moment from 'moment';
+import * as Tasks from '../../website/src/models/task';
 
 afterEach((done) => {
   sandbox.restore();
@@ -64,3 +65,32 @@ export function generateHistory (days) {
 
   return history;
 }
+
+export async function generateHabit (update = {}) {
+  let type = 'habit';
+  let task = new Tasks[type](update);
+  await task.save({ validateBeforeSave: false });
+  return task;
+}
+
+export async function generateDaily (update = {}) {
+  let type = 'daily';
+  let task = new Tasks[type](update);
+  await task.save({ validateBeforeSave: false });
+  return task;
+}
+
+export async function generateReward (update = {}) {
+  let type = 'reward';
+  let task = new Tasks[type](update);
+  await task.save({ validateBeforeSave: false });
+  return task;
+}
+
+export async function generateTodo (update = {}) {
+  let type = 'todo';
+  let task = new Tasks[type](update);
+  await task.save({ validateBeforeSave: false });
+  return task;
+}
+

@@ -6,8 +6,12 @@ import {
   generateHabit,
   generateTodo,
   generateReward,
-} from '../../helpers/api-integration/v3';
+} from '../../helpers/api-unit.helper';
 import common from '../../../common';
+import i18n from '../../../common/script/i18n';
+import {
+  NotAuthorized,
+} from '../../../common/script/libs/errors';
 
 let EPSILON = 0.0001; // negligible distance between datapoints
 
@@ -56,12 +60,15 @@ describe('shared.ops.scoreTask', () => {
     ref = await beforeAfter();
   });
 
-  it('throws error not enough gold', async () => {
+  it('throws an error when scoring a reward if user does not have enough gold', async () => {
     let reward = await generateReward({ userId: ref.after._id, text: 'some reward', value: 100 });
-    expect(scoreTask.bind(_, { user: ref.after, task: reward })).to.throw('NotAuthorized: Not Enough Gold');
+    // expect(scoreTask.bind(_, { user: ref.after, task: reward })).to.throw('NotAuthorized: Not Enough Gold');
+    expect(() => {
+      scoreTask({ user: ref.after, task: reward });
+    }).to.throw(new NotAuthorized(i18n.t('messageNotEnoughGold')));
   });
 
-  it('streak', async () => {
+  it('checks that the streak parameters affects the score', async () => {
     let task = await generateDaily({ userId: ref.after._id, text: 'task to check streak' });
     scoreTask({ user: ref.after, task, direction: 'up', cron: false });
     scoreTask({ user: ref.after, task, direction: 'up', cron: false });
@@ -82,7 +89,7 @@ describe('shared.ops.scoreTask', () => {
     expect(task.dateCompleted).to.not.exist;
   });
 
-  describe('times parameter in scoring', async () => {
+  describe('verifies that times parameter in scoring works', async () => {
     let habit;
 
     beforeEach(async () => {
