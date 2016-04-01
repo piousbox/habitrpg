@@ -8,10 +8,10 @@ import {
   generateReward,
 } from '../../helpers/api-unit.helper';
 import common from '../../../common';
-import i18n from '../../../common/script/i18n';
-import {
-  NotAuthorized,
-} from '../../../common/script/libs/errors';
+// import i18n from '../../../common/script/i18n';
+// import {
+//   NotAuthorized,
+// } from '../../../common/script/libs/errors';
 
 let EPSILON = 0.0001; // negligible distance between datapoints
 
@@ -62,10 +62,10 @@ describe('shared.ops.scoreTask', () => {
 
   it('throws an error when scoring a reward if user does not have enough gold', async () => {
     let reward = await generateReward({ userId: ref.after._id, text: 'some reward', value: 100 });
-    // expect(scoreTask.bind(_, { user: ref.after, task: reward })).to.throw('NotAuthorized: Not Enough Gold');
-    expect(() => {
-      scoreTask({ user: ref.after, task: reward });
-    }).to.throw(new NotAuthorized(i18n.t('messageNotEnoughGold')));
+    expect(scoreTask.bind(_, { user: ref.after, task: reward })).to.throw('NotAuthorized: Not Enough Gold');
+    // expect(() => {
+    //   scoreTask({ user: ref.after, task: reward });
+    // }).to.throw(new NotAuthorized(i18n.t('messageNotEnoughGold')));
   });
 
   it('checks that the streak parameters affects the score', async () => {
