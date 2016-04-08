@@ -219,6 +219,10 @@ api.deleteUser = {
 
     await Q.all(groupLeavePromises);
 
+    await Tasks.Task.remove({
+      userId: user._id,
+    }).exec();
+
     await user.remove();
 
     res.respond(200, {});
@@ -761,6 +765,155 @@ api.userOpenMysteryItem = {
     let openMysteryItemResponse = common.ops.openMysteryItem(user, req, res.analytics);
     await user.save();
     res.respond(200, openMysteryItemResponse);
+  },
+};
+
+/**
+* @api {post} /user/release-pets Releases pets.
+* @apiVersion 3.0.0
+* @apiName UserReleasePets
+* @apiGroup User
+*
+* @apiSuccess {Object} data `user.items.pets`
+*/
+api.userReleasePets = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/release-pets',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let releasePetsResponse = common.ops.releasePets(user, req, res.analytics);
+    await user.save();
+    res.respond(200, releasePetsResponse);
+  },
+};
+
+/*
+* @api {post} /user/release-both Releases Pets and Mounts and grants Triad Bingo.
+* @apiVersion 3.0.0
+* @apiName UserReleaseBoth
+* @apiGroup User
+*
+* @apiSuccess {Object} data `user.items.gear.owned`
+*/
+api.userReleaseBoth = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/release-both',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let releaseBothResponse = common.ops.releaseBoth(user, req, res.analytics);
+    await user.save();
+    res.respond(200, releaseBothResponse);
+  },
+};
+
+/*
+* @api {post} /user/release-mounts Released mounts.
+* @apiVersion 3.0.0
+* @apiName UserReleaseMounts
+* @apiGroup User
+*
+* @apiSuccess {Object} data `mounts`
+*/
+api.userReleaseMounts = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/release-mounts',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let releaseMountsResponse = common.ops.releaseMounts(user, req, res.analytics);
+    await user.save();
+    res.respond(200, releaseMountsResponse);
+  },
+};
+
+/*
+* @api {post} /user/sell/:type/:key Sells user's items.
+* @apiVersion 3.0.0
+* @apiName UserSell
+* @apiGroup User
+*
+* @apiSuccess {Object} data `stats items`
+*/
+api.userSell = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/sell/:type/:key',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let sellResponse = common.ops.sell(user, req);
+    await user.save();
+    res.respond(200, sellResponse);
+  },
+};
+
+/*
+* @api {post} /user/unlock Unlocks items by purchase.
+* @apiVersion 3.0.0
+* @apiName UserUnlock
+* @apiGroup User
+*
+* @apiSuccess {Object} data `purchased preferences items`
+*/
+api.userUnlock = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/unlock',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let unlockResponse = common.ops.unlock(user, req);
+    await user.save();
+    res.respond(200, unlockResponse);
+  },
+};
+
+/**
+* @api {post} /user/revive Revives user from death.
+* @apiVersion 3.0.0
+* @apiName UserRevive
+* @apiGroup User
+*
+* @apiSuccess {Object} data `user.items`
+*/
+api.userRevive = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/revive',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let reviveResponse = common.ops.revive(user, req, res.analytics);
+    await user.save();
+    res.respond(200, reviveResponse);
+  },
+};
+
+/*
+* @api {post} /user/rebirth Resets a user.
+* @apiVersion 3.0.0
+* @apiName UserRebirth
+* @apiGroup User
+*
+* @apiSuccess {Object} data `user`
+*/
+api.userRebirth = {
+  method: 'POST',
+  middlewares: [authWithHeaders(), cron],
+  url: '/user/rebirth',
+  async handler (req, res) {
+    let user = res.locals.user;
+    let query = {
+      userId: user._id,
+      type: {$in: ['daily', 'habit', 'todo']},
+    };
+    let tasks = await Tasks.Task.find(query).exec();
+    let rebirthResponse = common.ops.rebirth(user, tasks, req, res.analytics);
+
+    await user.save();
+
+    await Q.all(tasks.map(task => task.save()));
+
+    res.respond(200, rebirthResponse);
   },
 };
 

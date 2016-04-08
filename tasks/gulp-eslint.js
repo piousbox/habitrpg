@@ -3,12 +3,7 @@ import eslint from 'gulp-eslint';
 
 const SERVER_FILES = [
   './website/src/**/api-v3/**/*.js',
-  './website/src/models/user.js',
-  './website/src/models/task.js',
-  './website/src/models/group.js',
-  './website/src/models/challenge.js',
-  './website/src/models/tag.js',
-  './website/src/models/emailUnsubscription.js',
+  './website/src/models/**',
   './website/src/server.js',
 ];
 const COMMON_FILES = [
@@ -28,17 +23,13 @@ const COMMON_FILES = [
   '!./common/script/ops/deleteWebhook.js',
   '!./common/script/ops/getTag.js',
   '!./common/script/ops/getTags.js',
-  '!./common/script/ops/rebirth.js',
   '!./common/script/ops/releaseBoth.js',
   '!./common/script/ops/releaseMounts.js',
   '!./common/script/ops/releasePets.js',
   '!./common/script/ops/reroll.js',
   '!./common/script/ops/reset.js',
-  '!./common/script/ops/revive.js',
-  '!./common/script/ops/sell.js',
   '!./common/script/ops/sortTag.js',
   '!./common/script/ops/sortTask.js',
-  '!./common/script/ops/unlock.js',
   '!./common/script/ops/update.js',
   '!./common/script/ops/updateTag.js',
   '!./common/script/ops/updateTask.js',
