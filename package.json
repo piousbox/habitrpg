@@ -120,7 +120,12 @@
     "coverage": "COVERAGE=true mocha --require register-handlers.js --reporter html-cov > coverage.html; open coverage.html"
   },
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.7.6",
     "babel-eslint": "^5.0.0",
+    "babel-plugin-rewire": "^1.0.0-rc-2",
+    "babel-template": "^6.7.0",
+    "babel-types": "^6.7.2",
     "chai": "^3.4.0",
     "chai-as-promised": "^5.1.0",
     "coveralls": "^2.11.2",

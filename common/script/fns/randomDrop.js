@@ -3,7 +3,8 @@ import content from '../content/index';
 import i18n from '../i18n';
 import { daysSince } from '../cron';
 import { diminishingReturns } from '../statHelpers';
-import { predictableRandom } from './predictableRandomWrapper';
+// import { predictableRandom } from './predictableRandomWrapper';
+let predictableRandom = require('./predictableRandom');
 import randomVal from './randomVal';
 
 // Clone a drop object maintaining its functions so that we can change it without affecting the original item

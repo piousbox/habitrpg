@@ -1,4 +1,5 @@
-import randomDrop from '../../../common/script/fns/randomDrop';
+// import randomDrop from '../../../common/script/fns/randomDrop';
+let randomDrop = require('../../../common/script/fns/randomDrop');
 import {
   generateUser,
   generateTodo,
@@ -6,7 +7,8 @@ import {
   generateDaily,
   generateReward,
 } from '../../helpers/common.helper';
-import predictableRandomWrapper from '../../../common/script/fns/predictableRandomWrapper';
+// import predictableRandomWrapper from '../../../common/script/fns/predictableRandomWrapper';
+// let predictableRandom = require('../../../common/script/fns/predictableRandom');
 import content from '../../../common/script/content/index';
 
 describe('common.fns.randomDrop', () => {
@@ -14,12 +16,20 @@ describe('common.fns.randomDrop', () => {
   let task;
 
   beforeEach(() => {
+    // predictableRandom.__Rewire__(
+    randomDrop.__Rewire__('predictableRandom', () => {
+      return 0.5;
+    });
     user = generateUser();
     user._tmp = user._tmp ? user._tmp : {};
     task = generateTodo({ userId: user._id });
-    predictableRandomWrapper.predictableRandom = () => {
+    /* predictableRandomWrapper.predictableRandom = () => {
       return 0.5;
-    };
+    }; */
+  });
+
+  afterEach(() => {
+    randomDrop.__ResetDependency__('predictableRandom');
   });
 
   /**
