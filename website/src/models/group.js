@@ -31,7 +31,7 @@ export let schema = new Schema({
   type: {type: String, enum: ['guild', 'party'], required: true},
   privacy: {type: String, enum: ['private', 'public'], default: 'private', required: true},
   // _v: {type: Number,'default': 0}, // TODO ?
-  chat: Array, // TODO ?
+  chat: Array,
   /*
   #    [{
   #      timestamp: Date
@@ -44,7 +44,7 @@ export let schema = new Schema({
   */
   leaderOnly: { // restrict group actions to leader (members can't do them)
     challenges: {type: Boolean, default: false, required: true},
-    // invites: {type:Boolean, 'default':false} // TODO ?
+    // invites: {type:Boolean, 'default':false}
   },
   memberCount: {type: Number, default: 1},
   challengeCount: {type: Number, default: 0},
@@ -66,7 +66,6 @@ export let schema = new Schema({
     // Shows boolean for each party-member who has accepted the quest. Eg {UUID: true, UUID: false}. Once all users click
     // 'Accept', the quest begins. If a false user waits too long, probably a good sign to prod them or boot them.
     // TODO when booting user, remove from .joined and check again if we can now start the quest
-    // TODO as long as quests are party only we can keep it here
     members: {type: Schema.Types.Mixed, default: () => {
       return {};
     }},
@@ -161,10 +160,11 @@ schema.statics.getGroups = async function getGroups (options = {}) {
 
   types.forEach(type => {
     switch (type) {
-      case 'party':
+      case 'party': {
         queries.push(this.getGroup({user, groupId: 'party', fields: groupFields, populateLeader}));
         break;
-      case 'privateGuilds':
+      }
+      case 'privateGuilds': {
         let privateGroupQuery = this.find({
           type: 'guild',
           privacy: 'private',
@@ -174,7 +174,8 @@ schema.statics.getGroups = async function getGroups (options = {}) {
         privateGroupQuery.sort(sort).exec();
         queries.push(privateGroupQuery);
         break;
-      case 'publicGuilds':
+      }
+      case 'publicGuilds': {
         let publicGroupQuery = this.find({
           type: 'guild',
           privacy: 'public',
@@ -183,11 +184,13 @@ schema.statics.getGroups = async function getGroups (options = {}) {
         publicGroupQuery.sort(sort).exec();
         queries.push(publicGroupQuery); // TODO use lean?
         break;
-      case 'tavern':
+      }
+      case 'tavern': {
         if (types.indexOf('publicGuilds') === -1) {
           queries.push(this.getGroup({user, groupId: TAVERN_ID, fields: groupFields}));
         }
         break;
+      }
     }
   });
 
@@ -273,7 +276,7 @@ schema.methods.sendChat = function sendChat (message, user) {
   this.chat.unshift(chatDefaults(message, user));
   this.chat.splice(200);
 
-  // Kick off chat notifications in the background. // TODO refactor
+  // Kick off chat notifications in the background.
   let lastSeenUpdate = {$set: {}, $inc: {_v: 1}};
   lastSeenUpdate.$set[`newMessages.${this._id}`] = {name: this.name, value: true};
 
@@ -436,22 +439,26 @@ schema.methods.finishQuest = function finishQuest (quest) {
     let dropK = item.key;
 
     switch (item.type) {
-      case 'gear':
+      case 'gear': {
         // TODO This means they can lose their new gear on death, is that what we want?
         updates.$set[`items.gear.owned.${dropK}`] = true;
         break;
+      }
       case 'eggs':
       case 'food':
       case 'hatchingPotions':
-      case 'quests':
+      case 'quests': {
         updates.$inc[`items.${item.type}.${dropK}`] = _.where(quest.drop.items, {type: item.type, key: item.key}).length;
         break;
-      case 'pets':
+      }
+      case 'pets': {
         updates.$set[`items.pets.${dropK}`] = 5;
         break;
-      case 'mounts':
+      }
+      case 'mounts': {
         updates.$set[`items.mounts.${dropK}`] = true;
         break;
+      }
     }
   });
 

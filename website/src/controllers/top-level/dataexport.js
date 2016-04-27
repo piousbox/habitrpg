@@ -26,11 +26,11 @@ const BASE_URL = nconf.get('BASE_URL');
 let api = {};
 
 /**
- * @api {get} /export/history.csv Export user tasks history in CSV format. History is only available for habits and dailys so todos and rewards won't be included
+ * @api {get} /export/history.csv Export user tasks history in CSV format.
+ * @apiDescription History is only available for habits and dailys so todos and rewards won't be included NOTE: Part of the private API that may change at any time.
  * @apiVersion 3.0.0
  * @apiName ExportUserHistory
  * @apiGroup DataExport
- * @apiDescription NOTE: Part of the private API that may change at any time.
  *
  * @apiSuccess {string} A cvs file
  */
@@ -64,7 +64,7 @@ api.exportUserHistory = {
 
     res.set({
       'Content-Type': 'text/csv',
-      'Content-disposition': `attachment; filename=habitica-tasks-history.csv`,
+      'Content-disposition': 'attachment; filename=habitica-tasks-history.csv',
     });
 
     let csvRes = await csvStringify(output);
@@ -111,7 +111,7 @@ api.exportUserDataJson = {
 
     res.set({
       'Content-Type': 'application/json',
-      'Content-disposition': `attachment; filename=habitica-user-data.json`,
+      'Content-disposition': 'attachment; filename=habitica-user-data.json',
     });
     let jsonRes = JSON.stringify(userData);
 
@@ -137,7 +137,7 @@ api.exportUserDataXml = {
 
     res.set({
       'Content-Type': 'text/xml',
-      'Content-disposition': `attachment; filename=habitica-user-data.xml`,
+      'Content-disposition': 'attachment; filename=habitica-user-data.xml',
     });
     res.status(200).send(js2xml('user', userData));
   },
